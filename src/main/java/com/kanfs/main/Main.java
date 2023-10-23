@@ -1,6 +1,6 @@
 package com.kanfs.main;
 
-import java.io.File;
+import java.io.*;
 import java.nio.file.Path;
 
 public class Main {
@@ -10,36 +10,67 @@ public class Main {
         String backupPath = "backup_path";
 
         //备份
-        bcakup(sourcePath, backupPath);
+        backup(sourcePath, backupPath);
 
-        //还原
+        //还原 ? 还原需要干嘛
         restore(sourcePath, backupPath);
 
     }
 
-    private static void bcakup(String sourcePath, String backupPath) {
-        File sourceFile = new File(sourcePath);
-        // 根据备份的是文件还是目录作不同处理
-        if ( sourceFile.isDirectory() )
-        {
-            // 复制文件夹
-            File backupFile = new File(backupPath, sourceFile.getName());
-            copyDirectory(sourceFile.toPath(), backupFile.toPath());
+    private static void backup(String sourcePath, String backupPath) {
+        try {
+            // 打开文件
+            File sourceFile = new File(sourcePath);
+            File backupFile = new File(backupPath);
+
+            // 拷贝文件
+            copyFile(sourceFile, backupFile);
             System.out.println(backupFile.getAbsoluteFile() + " Back up Completed");
-        } else if ( sourceFile.isFile() ) {
-            // 复制文件
-            File backupFile = new File(backupPath, sourceFile.getName());
-            copyFile(sourceFile.toPath(), backupFile.toPath());
-            System.out.println(backupFile.getAbsoluteFile() + " Back up Completed");
-        } else {
-            System.out.println("Unsupported source type.");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("unable to find target file.");
+            throw new RuntimeException(e);
+        } catch ( IOException e) {
+            System.out.println("unable to copy file.");
+            throw new RuntimeException(e);
         }
     }
 
-    private static void copyFile(Path sourcePath, Path backupPath) {
-    }
+    private static void copyFile(File sourceFile, File backupFile) throws IOException {
+        if( sourceFile.isDirectory() )
+        {
+            // 创建目标文件夹
+            backupFile.mkdir();
 
-    private static void copyDirectory(Path sourcePath, Path backupPath) {
+            // 获取源文件夹下的所有子文件和子文件夹
+            String[] files = sourceFile.list();
+            for (String filePath : files)
+            {
+                // 打开文件
+                File subSourceFile = new File(sourceFile.getAbsoluteFile()+filePath);
+                File subBackupFile = new File(backupFile.getAbsoluteFile()+filePath);
+
+                // 递归拷贝文件
+                copyFile(sourceFile, backupFile);
+            }
+        }else{
+            // 创建带缓冲区的IO流
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sourceFile));
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(backupFile));
+
+            // 文件复制
+            byte[] buff = new byte[1024];
+            int len = 0;
+            while ((len = bis.read(buff)) != -1)
+                bos.write(buff, 0, len);
+
+            // 关闭IO流
+            bis.close();
+            bos.close();
+        }
+
+
+
     }
 
     private static void restore(String sourcePath, String backupPath) {
