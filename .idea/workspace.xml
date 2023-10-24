@@ -5,6 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff9b2ae6-99e6-4789-899c-a2f7e8d6ca1b" name="变更" comment="complete the basic structure of backup function">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/main/Main.java" afterDir="false" />
     </list>
@@ -12,6 +13,13 @@
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -47,7 +55,8 @@
       <workItem from="1698055382967" duration="4992000" />
       <workItem from="1698062715897" duration="770000" />
       <workItem from="1698063520453" duration="1639000" />
-      <workItem from="1698065852525" duration="2291000" />
+      <workItem from="1698065852525" duration="2621000" />
+      <workItem from="1698129538929" duration="16344000" />
     </task>
     <task id="LOCAL-00001" summary="complete the basic structment of backup function">
       <created>1698061407981</created>
