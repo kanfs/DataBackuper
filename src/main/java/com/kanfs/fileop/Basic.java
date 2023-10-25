@@ -57,8 +57,6 @@ public class Basic {
             bos.close();
         }
 
-
-
     }
 
     public static void restore(String sourcePath, String backupPath) {
@@ -79,8 +77,5 @@ public class Basic {
             throw new RuntimeException(e);
         }
     }
-
-
-
 
 }
