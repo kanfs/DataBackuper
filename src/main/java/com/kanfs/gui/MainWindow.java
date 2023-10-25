@@ -1,26 +1,38 @@
 package com.kanfs.gui;
 
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.kanfs.fileop.Parser;
+
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.net.URL;
 
 import static com.kanfs.fileop.Basic.*;
 
 public class MainWindow extends JFrame implements ActionListener{
 
 
-    private JPanel sourcePanel, backupPanel, BorRPanel, confirmPanel, panel;
-    private JTextField sourceTextField, backupTextField;
+    private JPanel sourcePanel, backupPanel, newFileNamePanel, BorRPanel, attributesPanel, confirmPanel, panel;
+    private JTextField sourceTextField, backupTextField, newFileNameTextField;
     private JRadioButton backupBtn, restoreBtn;
+    private JCheckBox owner, time, acl;
 
     public MainWindow() {
         super("DataBackuper");
+        Font xingkai = new Font("华文行楷", Font.TRUETYPE_FONT, 18);
+        Font kaiti = new Font("楷体", Font.TRUETYPE_FONT, 18);
+
         // 源文件选择面板
         sourcePanel = new JPanel();
         sourcePanel.setLayout(new BoxLayout(sourcePanel, BoxLayout.X_AXIS));
-        JLabel sourceLabel = new JLabel("  源文件路径:  ");
-        sourceTextField = new JTextField(25);
+        JLabel sourceLabel = new JLabel("    源文件路径:");
+        sourceLabel.setFont(xingkai);
+        sourceTextField = new JTextField(30);
         JButton sourceFileChooseBtn = new JButton("  选择源文件地址  ");
+        sourceFileChooseBtn.setFont(xingkai);
         sourceFileChooseBtn.setActionCommand("choose source file");
         sourceFileChooseBtn.addActionListener(this);
         sourcePanel.add(sourceLabel);
@@ -31,20 +43,41 @@ public class MainWindow extends JFrame implements ActionListener{
         backupPanel = new JPanel();
         backupPanel.setLayout(new BoxLayout(backupPanel, BoxLayout.X_AXIS));
         JLabel backupLabel = new JLabel("备份文件路径:");
-        backupTextField = new JTextField(25);
+        backupLabel.setFont(xingkai);
+        backupTextField = new JTextField(30);
         JButton backupFileChooseBtn = new JButton("选择备件文件地址");
+        backupFileChooseBtn.setFont(xingkai);
         backupFileChooseBtn.setActionCommand("choose backup file");
         backupFileChooseBtn.addActionListener(this);
         backupPanel.add(backupLabel);
         backupPanel.add(backupTextField);
         backupPanel.add(backupFileChooseBtn);
 
+        // 新文件名字面板
+        newFileNamePanel = new JPanel();
+        newFileNamePanel.setLayout(new BoxLayout(newFileNamePanel, BoxLayout.X_AXIS));
+        JLabel newFileNameLabel = new JLabel("        新文件名:");
+        newFileNameLabel.setFont(xingkai);
+        newFileNameTextField = new JTextField(30);
+        //ClassLoader classLoader = MainWindow.class.getClassLoader();
+        //ImageIcon flatSVGIcon = new FlatSVGIcon("ImageIcon/links-fill.svg", 24, 24, classLoader);
+        JButton newFileNameBtn = new JButton("    使用旧文件名    ");
+        newFileNameBtn.setFont(xingkai);
+        newFileNameBtn.setActionCommand("use old file name");
+        newFileNameBtn.addActionListener(this);
+        newFileNamePanel.add(newFileNameLabel);
+        newFileNamePanel.add(newFileNameTextField);
+        newFileNamePanel.add(newFileNameBtn);
+
         // 备份或还原选择面板
         BorRPanel = new JPanel();
         BorRPanel.setLayout(new BoxLayout(BorRPanel, BoxLayout.X_AXIS));
         JLabel BorRLabel = new JLabel("操作:");
-        backupBtn = new JRadioButton("备份");
-        restoreBtn = new JRadioButton("还原");
+        BorRLabel.setFont(kaiti);
+        backupBtn = new JRadioButton("备份", true);
+        backupBtn.setFont(kaiti);
+        restoreBtn = new JRadioButton("还原", false);
+        restoreBtn.setFont(kaiti);
         ButtonGroup _bg = new ButtonGroup();
         _bg.add(backupBtn);
         _bg.add(restoreBtn);
@@ -52,26 +85,47 @@ public class MainWindow extends JFrame implements ActionListener{
         BorRPanel.add(backupBtn);
         BorRPanel.add(restoreBtn);
 
+        // 元数据选择面板
+        attributesPanel = new JPanel();
+        attributesPanel.setLayout(new BoxLayout(attributesPanel, BoxLayout.X_AXIS));
+        JLabel attributesLabel = new JLabel("元数据拷贝选择:");
+        attributesLabel.setFont(kaiti);
+        owner = new JCheckBox("属主");
+        time = new JCheckBox("时间");
+        acl = new JCheckBox("权限"); // access control list 访问控制列表 => 权限
+        owner.setFont(kaiti);
+        time.setFont(kaiti);
+        acl.setFont(kaiti);
+        attributesPanel.add(attributesLabel);
+        attributesPanel.add(owner);
+        attributesPanel.add(time);
+        attributesPanel.add(acl);
+
         // 确认面板
         confirmPanel = new JPanel();
         confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.X_AXIS));
         JButton confirmBtn = new JButton("确认");
+        confirmBtn.setFont(new Font("楷体", Font.TRUETYPE_FONT, 18));
         confirmBtn.setActionCommand("confirm");
         confirmBtn.addActionListener(this);
         confirmPanel.add(confirmBtn);
+
 
         // 总面板控制
         panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.add(sourcePanel);
         panel.add(backupPanel);
+        panel.add(newFileNamePanel);
         panel.add(BorRPanel);
+        panel.add(attributesPanel);
         panel.add(confirmPanel);
         this.add(panel);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setLocationRelativeTo(null);
+
     }
 
 
@@ -93,15 +147,38 @@ public class MainWindow extends JFrame implements ActionListener{
                 if (e.getActionCommand().equals("choose source file")) sourceTextField.setText(filePath);
                 else backupTextField.setText(filePath);
             }
-        } else if ( e.getActionCommand().equals("confirm") ){
-            // 点击了确认按钮后将信息进行备份或还原
+        }else if ( e.getActionCommand().equals("use old file name") ) {
+            // 点击使用旧文件名按钮
+            String str = sourceTextField.getText();
+            System.out.println("sourceTextField.getText():"+str);
+            // 路径为空或文件不存在 则弹窗报错
+            if ( str == null || str.equals("") )
+            {
+                NotNullDialog notNullDialog = new NotNullDialog(this, "error", true);
+                return ;
+            }
+            File tmpFile = new File(str);
+            if (!tmpFile.exists())
+            {
+                FileNotFoundDialog fileNotFoundDialog = new FileNotFoundDialog(this, "error", true);
+                return ;
+            }
+            // 将文件名或目录名粘贴到textField中
+            if (tmpFile.isFile()) str = tmpFile.getName();
+            else str = tmpFile.getAbsolutePath().substring(tmpFile.getAbsolutePath().lastIndexOf('\\')+1);
+            newFileNameTextField.setText(str);
+        }else if ( e.getActionCommand().equals("confirm") ){
+            // 点击了确认按钮后将信息封装成Parser对象传给 备份或还原函数执行对应操作
             System.out.println("click confirm");
+            Parser parser = new Parser(sourceTextField.getText(), backupTextField.getText(), newFileNameTextField.getText(),
+                    new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()});
             //备份
-            if ( backupBtn.isSelected() ) backup(sourceTextField.getText(), backupTextField.getText());
+            if ( backupBtn.isSelected() ) backup(parser);
             //还原 将备份文件复制回源文件夹
-            if ( restoreBtn.isSelected() ) restore(sourceTextField.getText(), backupTextField.getText());
+            else restore(parser);
 
             //dispose();
         }
     }
 }
+
