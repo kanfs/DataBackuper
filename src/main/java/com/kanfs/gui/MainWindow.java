@@ -1,7 +1,9 @@
 package com.kanfs.gui;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import com.kanfs.fileop.Filter;
 import com.kanfs.fileop.Parser;
+import static com.kanfs.fileop.Basic.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,20 +12,20 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.net.URL;
 
-import static com.kanfs.fileop.Basic.*;
-
 public class MainWindow extends JFrame implements ActionListener{
 
 
-    private JPanel sourcePanel, backupPanel, newFileNamePanel, BorRPanel, attributesPanel, confirmPanel, panel;
+    private JPanel sourcePanel, backupPanel, newFileNamePanel, BorRPanel, attributesPanel, filterPanel, confirmPanel, panel;
     private JTextField sourceTextField, backupTextField, newFileNameTextField;
     private JRadioButton backupBtn, restoreBtn;
     private JCheckBox owner, time, acl;
+    private FilterDialog filterDialog;  // 文件筛选器弹窗
+    private Filter filter = null; // 文件筛选器
 
     public MainWindow() {
         super("DataBackuper");
-        Font xingkai = new Font("华文行楷", Font.TRUETYPE_FONT, 18);
-        Font kaiti = new Font("楷体", Font.TRUETYPE_FONT, 18);
+        Font xingkai = new Font("华文行楷", Font.PLAIN, 18);
+        Font kaiti = new Font("楷体", Font.PLAIN, 18);
 
         // 源文件选择面板
         sourcePanel = new JPanel();
@@ -101,11 +103,25 @@ public class MainWindow extends JFrame implements ActionListener{
         attributesPanel.add(time);
         attributesPanel.add(acl);
 
+        // 筛选面板
+        filterPanel = new JPanel();
+        filterPanel.setLayout(new BoxLayout(filterPanel, BoxLayout.X_AXIS));
+        JButton setFilterBtn = new JButton("设置筛选器");
+        setFilterBtn.setFont(kaiti);
+        setFilterBtn.setActionCommand("set filter");
+        setFilterBtn.addActionListener(this);
+        JButton clearFilterBtn = new JButton("重置筛选器");
+        clearFilterBtn.setFont(kaiti);
+        clearFilterBtn.setActionCommand("clear filter");
+        clearFilterBtn.addActionListener(this);
+        filterPanel.add(setFilterBtn);
+        filterPanel.add(clearFilterBtn);
+
         // 确认面板
         confirmPanel = new JPanel();
         confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.X_AXIS));
-        JButton confirmBtn = new JButton("确认");
-        confirmBtn.setFont(new Font("楷体", Font.TRUETYPE_FONT, 18));
+        JButton confirmBtn = new JButton("  确认  ");
+        confirmBtn.setFont(kaiti);
         confirmBtn.setActionCommand("confirm");
         confirmBtn.addActionListener(this);
         confirmPanel.add(confirmBtn);
@@ -119,7 +135,11 @@ public class MainWindow extends JFrame implements ActionListener{
         panel.add(newFileNamePanel);
         panel.add(BorRPanel);
         panel.add(attributesPanel);
+        panel.add(filterPanel);
         panel.add(confirmPanel);
+        ClassLoader classLoader = MainWindow.class.getClassLoader();
+        ImageIcon flatSVGIcon = new FlatSVGIcon("ImageIcon/send-backward.svg", 12, 12, classLoader);
+        this.setIconImage(flatSVGIcon.getImage());
         this.add(panel);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -167,11 +187,18 @@ public class MainWindow extends JFrame implements ActionListener{
             if (tmpFile.isFile()) str = tmpFile.getName();
             else str = tmpFile.getAbsolutePath().substring(tmpFile.getAbsolutePath().lastIndexOf('\\')+1);
             newFileNameTextField.setText(str);
+        }else if ( e.getActionCommand().equals("set filter") ) {
+            filterDialog = new FilterDialog(this, "Filter", true);
+            filter = filterDialog.getFilter();
+            System.out.println("set filter");
+        }else if ( e.getActionCommand().equals("clear filter")  && filterDialog != null) {
+            System.out.println("clear filter");
+            filter = null;
         }else if ( e.getActionCommand().equals("confirm") ){
             // 点击了确认按钮后将信息封装成Parser对象传给 备份或还原函数执行对应操作
             System.out.println("click confirm");
             Parser parser = new Parser(sourceTextField.getText(), backupTextField.getText(), newFileNameTextField.getText(),
-                    new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()});
+                    new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()}, filter);
             //备份
             if ( backupBtn.isSelected() ) backup(parser);
             //还原 将备份文件复制回源文件夹

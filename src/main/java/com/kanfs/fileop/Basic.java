@@ -3,9 +3,10 @@ package com.kanfs.fileop;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.*;
 import java.nio.file.attribute.*;
-import java.util.List;
+import java.text.ParseException;
+import java.util.*;
 
 public class Basic {
     public static void backup(Parser parser) {
@@ -13,22 +14,22 @@ public class Basic {
         try {
             // 打开文件
             File sourceFile = new File(parser.sourcePath);
-            File backupFile = new File(parser.backupPath + parser.newFileName);
+            File backupFile = new File(parser.backupPath + "/" + parser.newFileName);
 
             // 拷贝文件
-            copyFile(sourceFile, backupFile, parser.attributes);
+            copyFile(sourceFile, backupFile, parser.attributes, parser.filter);
             System.out.println(backupFile.getAbsoluteFile() + " Back up Completed");
 
         } catch (FileNotFoundException e) {
-            System.out.println("unable to find target file.");
+            System.out.println("unable to find back up file.");
             throw new RuntimeException(e);
-        } catch ( IOException e) {
+        } catch (IOException | ParseException e) {
             System.out.println("unable to copy file.");
             throw new RuntimeException(e);
         }
     }
 
-    private static void copyFile(File sourceFile, File backupFile, boolean[] attributes) throws IOException {
+    private static void copyFile(File sourceFile, File backupFile, boolean[] attributes, Filter filter) throws IOException, ParseException {
         if( sourceFile.isDirectory() )
         {
             // 创建目标文件夹
@@ -39,34 +40,15 @@ public class Basic {
             for (String filePath : files)
             {
                 // 打开文件
-                File subSourceFile = new File(sourceFile.getAbsoluteFile()+filePath);
-                File subBackupFile = new File(backupFile.getAbsoluteFile()+filePath);
+                File subSourceFile = new File(sourceFile.getAbsolutePath()+"/"+filePath);
+                File subBackupFile = new File(backupFile.getAbsolutePath()+"/"+filePath);
 
                 // 递归拷贝文件
-                copyFile(sourceFile, backupFile, attributes);
+                copyFile(subSourceFile, subBackupFile, attributes, filter);
             }
         }else{
-            // 读取源文件元数据
-            if ( attributes[0] ) // owner
-            {
-                FileOwnerAttributeView ownerAttributeView = Files.getFileAttributeView(sourceFile.toPath(), FileOwnerAttributeView.class);
-                UserPrincipal owner = ownerAttributeView.getOwner();
-                Files.getFileAttributeView(backupFile.toPath(), FileOwnerAttributeView.class).setOwner(owner);
-            }
-            if ( attributes[1] ) // time  creationTime + lastAccessTime + lastModifiedTime
-            {
-                BasicFileAttributes sourceTimeAttributes = Files.readAttributes(sourceFile.toPath(), BasicFileAttributes.class);
-                FileTime creationTime = sourceTimeAttributes.creationTime();
-                FileTime lastModifiedTime = sourceTimeAttributes.lastModifiedTime();
-                FileTime lastAccessTime = sourceTimeAttributes.lastAccessTime();
-                Files.getFileAttributeView(backupFile.toPath(), BasicFileAttributeView.class).setTimes(lastModifiedTime, lastAccessTime, creationTime);
-            }
-            if ( attributes[2] ) // acl
-            {
-                AclFileAttributeView sourceACLAttributes = Files.getFileAttributeView(sourceFile.toPath(), AclFileAttributeView.class);
-                List<AclEntry> acl = sourceACLAttributes.getAcl();
-                Files.getFileAttributeView(backupFile.toPath(), AclFileAttributeView.class).setAcl(acl);
-            }
+            // 查看是否通过筛选器
+            if ( filter != null && !filter.accept(sourceFile) ) return;
 
             // 创建带缓冲区的IO流
             BufferedInputStream bis = new BufferedInputStream(new FileInputStream(sourceFile));
@@ -81,6 +63,29 @@ public class Basic {
             // 关闭IO流
             bis.close();
             bos.close();
+
+            // 读取源文件元数据
+            if ( attributes[0] ) // owner
+            {
+                FileOwnerAttributeView ownerAttributeView = Files.getFileAttributeView(sourceFile.toPath(), FileOwnerAttributeView.class);
+                UserPrincipal owner = ownerAttributeView.getOwner();
+                Files.getFileAttributeView(backupFile.toPath(), FileOwnerAttributeView.class).setOwner(owner);
+            }
+            if ( attributes[2] ) // acl
+            {
+                AclFileAttributeView sourceACLAttributes = Files.getFileAttributeView(sourceFile.toPath(), AclFileAttributeView.class);
+                List<AclEntry> acl = sourceACLAttributes.getAcl();
+                Files.getFileAttributeView(backupFile.toPath(), AclFileAttributeView.class).setAcl(acl);
+            }
+            if ( attributes[1] ) // time  creationTime + lastAccessTime + lastModifiedTime
+            {
+                BasicFileAttributes sourceTimeAttributes = Files.readAttributes(sourceFile.toPath(), BasicFileAttributes.class);
+                FileTime creationTime = sourceTimeAttributes.creationTime();
+                FileTime lastModifiedTime = sourceTimeAttributes.lastModifiedTime();
+                FileTime lastAccessTime = sourceTimeAttributes.lastAccessTime();
+                Files.getFileAttributeView(backupFile.toPath(), BasicFileAttributeView.class).setTimes(lastModifiedTime, lastAccessTime, creationTime);
+            }
+
         }
 
     }
@@ -92,17 +97,17 @@ public class Basic {
             File backupFile = new File(parser.backupPath);
 
             // 拷贝文件
-            copyFile(backupFile, sourceFile, parser.attributes);
+            copyFile(backupFile, sourceFile, parser.attributes, parser.filter);
             System.out.println(sourceFile.getAbsoluteFile() + " Restored Completed");
 
         } catch (FileNotFoundException e) {
             System.out.println("unable to find back up file.");
             throw new RuntimeException(e);
-        } catch ( IOException e) {
+        } catch (IOException | ParseException e) {
             System.out.println("unable to copy file.");
             throw new RuntimeException(e);
         }
     }
 
-    // 文件元数据拷贝
 }
+
