@@ -5,27 +5,43 @@ import com.kanfs.fileop.Filter;
 import com.kanfs.fileop.Parser;
 import static com.kanfs.fileop.Basic.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
+import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedOutputStream;
 import java.io.File;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+import java.text.ParseException;
 
 public class MainWindow extends JFrame implements ActionListener{
 
 
-    private JPanel sourcePanel, backupPanel, newFileNamePanel, BorRPanel, attributesPanel, filterPanel, confirmPanel, panel;
+    private JPanel sourcePanel, backupPanel, newFileNamePanel, BorRPanel, attributesPanel, filterPanel, compressPanel, encryptionPanel, confirmPanel, panel;
     private JTextField sourceTextField, backupTextField, newFileNameTextField;
-    private JRadioButton backupBtn, restoreBtn;
+    private JRadioButton backupBtn, restoreBtn, compressBtn, decompressBtn, noCompressBtn, encryptBtn, decryptBtn, noEncryptionBtn;
     private JCheckBox owner, time, acl;
     private FilterDialog filterDialog;  // 文件筛选器弹窗
     private Filter filter = null; // 文件筛选器
+    private String cipher; // 密钥
 
     public MainWindow() {
         super("DataBackuper");
         Font xingkai = new Font("华文行楷", Font.PLAIN, 18);
         Font kaiti = new Font("楷体", Font.PLAIN, 18);
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
 
         // 源文件选择面板
         sourcePanel = new JPanel();
@@ -78,8 +94,12 @@ public class MainWindow extends JFrame implements ActionListener{
         BorRLabel.setFont(kaiti);
         backupBtn = new JRadioButton("备份", true);
         backupBtn.setFont(kaiti);
+        backupBtn.setActionCommand("backup");
+        backupBtn.addActionListener(this);
         restoreBtn = new JRadioButton("还原", false);
         restoreBtn.setFont(kaiti);
+        restoreBtn.setActionCommand("restore");
+        restoreBtn.addActionListener(this);
         ButtonGroup _bg = new ButtonGroup();
         _bg.add(backupBtn);
         _bg.add(restoreBtn);
@@ -117,6 +137,51 @@ public class MainWindow extends JFrame implements ActionListener{
         filterPanel.add(setFilterBtn);
         filterPanel.add(clearFilterBtn);
 
+        // 压缩面板
+        compressPanel = new JPanel();
+        compressPanel.setLayout(new BoxLayout(compressPanel, BoxLayout.X_AXIS));
+        JLabel compressLabel = new JLabel("压缩打包:");
+        compressLabel.setFont(kaiti);
+        compressBtn = new JRadioButton("压缩", false);
+        compressBtn.setFont(kaiti);
+        decompressBtn = new JRadioButton("解压", false);
+        decompressBtn.setFont(kaiti);
+        noCompressBtn = new JRadioButton("无", true);
+        noCompressBtn.setFont(kaiti);
+        ButtonGroup compressbg = new ButtonGroup();
+        compressbg.add(compressBtn);
+        compressbg.add(decompressBtn);
+        compressbg.add(noCompressBtn);
+        compressPanel.add(compressLabel);
+        compressPanel.add(compressBtn);
+        compressPanel.add(decompressBtn);
+        compressPanel.add(noCompressBtn);
+
+        // 加密面板
+        encryptionPanel = new JPanel();
+        encryptionPanel.setLayout(new BoxLayout(encryptionPanel, BoxLayout.X_AXIS));
+        JLabel encryptionLabel = new JLabel("加密解密:");
+        encryptionLabel.setFont(kaiti);
+        encryptBtn = new JRadioButton("加密", false);
+        encryptBtn.setActionCommand("encrypt");
+        encryptBtn.addActionListener(this);
+        encryptBtn.setFont(kaiti);
+        decryptBtn = new JRadioButton("解密", false);
+        decryptBtn.setActionCommand("decrypt");
+        decryptBtn.addActionListener(this);
+        decryptBtn.setFont(kaiti);
+        noEncryptionBtn = new JRadioButton("无", true);
+        noEncryptionBtn.setFont(kaiti);
+        ButtonGroup encryptionbg = new ButtonGroup();
+        encryptionbg.add(encryptBtn);
+        encryptionbg.add(decryptBtn);
+        encryptionbg.add(noEncryptionBtn);
+        encryptionPanel.add(encryptionLabel);
+        encryptionPanel.add(encryptBtn);
+        encryptionPanel.add(decryptBtn);
+        encryptionPanel.add(noEncryptionBtn);
+
+
         // 确认面板
         confirmPanel = new JPanel();
         confirmPanel.setLayout(new BoxLayout(confirmPanel, BoxLayout.X_AXIS));
@@ -136,10 +201,13 @@ public class MainWindow extends JFrame implements ActionListener{
         panel.add(BorRPanel);
         panel.add(attributesPanel);
         panel.add(filterPanel);
+        panel.add(compressPanel);
+        panel.add(encryptionPanel);
         panel.add(confirmPanel);
         ClassLoader classLoader = MainWindow.class.getClassLoader();
         ImageIcon flatSVGIcon = new FlatSVGIcon("ImageIcon/send-backward.svg", 12, 12, classLoader);
         this.setIconImage(flatSVGIcon.getImage());
+        backupBtn.doClick();
         this.add(panel);
         this.setVisible(true);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -155,7 +223,7 @@ public class MainWindow extends JFrame implements ActionListener{
         if ( e.getActionCommand().equals("choose source file") || e.getActionCommand().equals("choose backup file"))
         {
             // 弹出文件选择窗口
-            JFileChooser jFileChooser = new JFileChooser();
+            JFileChooser jFileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory(), FileSystemView.getFileSystemView());
             jFileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // 文件或文件夹都可选
             jFileChooser.setDialogTitle("请选择文件");
             jFileChooser.showOpenDialog(null);
@@ -170,41 +238,80 @@ public class MainWindow extends JFrame implements ActionListener{
         }else if ( e.getActionCommand().equals("use old file name") ) {
             // 点击使用旧文件名按钮
             String str = sourceTextField.getText();
-            System.out.println("sourceTextField.getText():"+str);
             // 路径为空或文件不存在 则弹窗报错
             if ( str == null || str.equals("") )
             {
-                NotNullDialog notNullDialog = new NotNullDialog(this, "error", true);
+                ErrorDialog notNullDialog = new ErrorDialog(this, "error", true, 1);
                 return ;
             }
             File tmpFile = new File(str);
             if (!tmpFile.exists())
             {
-                FileNotFoundDialog fileNotFoundDialog = new FileNotFoundDialog(this, "error", true);
+                ErrorDialog fileNotFoundDialog = new ErrorDialog(this, "error", true, 2);
                 return ;
             }
             // 将文件名或目录名粘贴到textField中
             if (tmpFile.isFile()) str = tmpFile.getName();
             else str = tmpFile.getAbsolutePath().substring(tmpFile.getAbsolutePath().lastIndexOf('\\')+1);
             newFileNameTextField.setText(str);
+        }else if ( e.getActionCommand().equals("backup") ) {
+            // 点击备份 默认选择不压缩不加密 不允许解压、解密
+            noCompressBtn.setSelected(true);
+            noEncryptionBtn.setSelected(true);
+            compressBtn.setEnabled(true);
+            encryptBtn.setEnabled(true);
+            decompressBtn.setEnabled(false);
+            decryptBtn.setEnabled(false);
+        }else if ( e.getActionCommand().equals("restore") ) {
+            // 点击还原 默认选择不压缩不加密 不允许压缩、加密
+            noCompressBtn.setSelected(true);
+            noEncryptionBtn.setSelected(true);
+            compressBtn.setEnabled(false);
+            encryptBtn.setEnabled(false);
+            decompressBtn.setEnabled(true);
+            decryptBtn.setEnabled(true);
         }else if ( e.getActionCommand().equals("set filter") ) {
+            // 点击设置过滤器
             filterDialog = new FilterDialog(this, "Filter", true);
             filter = filterDialog.getFilter();
-            System.out.println("set filter");
         }else if ( e.getActionCommand().equals("clear filter")  && filterDialog != null) {
-            System.out.println("clear filter");
+            // 点击重置过滤器
             filter = null;
+        }else if ( e.getActionCommand().equals("encrypt")  || e.getActionCommand().equals("decrypt") ) {
+            // 点击加密或者解密
+            CipherDialog cipherDialog = new CipherDialog(this, "Cipher", true);
+            cipher = cipherDialog.getCipher();
         }else if ( e.getActionCommand().equals("confirm") ){
-            // 点击了确认按钮后将信息封装成Parser对象传给 备份或还原函数执行对应操作
-            System.out.println("click confirm");
-            Parser parser = new Parser(sourceTextField.getText(), backupTextField.getText(), newFileNameTextField.getText(),
-                    new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()}, filter);
-            //备份
-            if ( backupBtn.isSelected() ) backup(parser);
-            //还原 将备份文件复制回源文件夹
-            else restore(parser);
+            try {
+                // 点击了确认按钮后将信息封装成Parser对象传给 备份或还原函数执行对应操作
+                Parser parser = new Parser(sourceTextField.getText(), backupTextField.getText(), newFileNameTextField.getText(),
+                        new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()}, filter, compressBtn.isSelected(),
+                        decompressBtn.isSelected(), cipher, encryptBtn.isSelected(), decryptBtn.isSelected());
+                // 备份
+                if ( backupBtn.isSelected() ) backup(parser);
+                    // 还原 将备份文件复制回源文件夹
+                else restore(parser);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (ParseException ex) {
+                throw new RuntimeException(ex);
+            } catch (ClassNotFoundException ex) {
+                throw new RuntimeException(ex);
+            } catch (NoSuchPaddingException ex) {
+                throw new RuntimeException(ex);
+            } catch (NoSuchAlgorithmException ex) {
+                throw new RuntimeException(ex);
+            } catch (InvalidKeyException ex) {
+                throw new RuntimeException(ex);
+            } catch (InvalidKeySpecException ex) {
+                throw new RuntimeException(ex);
+            } catch (IllegalBlockSizeException ex) {
+                throw new RuntimeException(ex);
+            } catch (BadPaddingException ex) {
+                throw new RuntimeException(ex);
+            }
 
-            //dispose();
+
         }
     }
 }

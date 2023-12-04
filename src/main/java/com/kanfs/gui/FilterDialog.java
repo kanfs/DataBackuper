@@ -136,7 +136,7 @@ public class FilterDialog extends JDialog implements ActionListener {
         panel.add(timePanel);
         panel.add(sizePanel);
         panel.add(confirmPanel);
-        ClassLoader classLoader = FileNotFoundDialog.class.getClassLoader();
+        ClassLoader classLoader = FilterDialog.class.getClassLoader();
         ImageIcon flatSVGIcon = new FlatSVGIcon("ImageIcon/filter-2-line.svg", 16, 16, classLoader);
         this.setIconImage(flatSVGIcon.getImage());
         this.add(panel);
@@ -156,11 +156,9 @@ public class FilterDialog extends JDialog implements ActionListener {
                         minSizeTextField.getText(), maxSizeTextField.getText(), pathBtn.isSelected(), nameBtn.isSelected(),
                         minSizeUnit.getSelectedIndex(), maxSizeUnit.getSelectedIndex());
             }catch (ParseException exception){
-                WrongTimeFormatDialog wrongTimeFormatDialog = new WrongTimeFormatDialog((JFrame) this.getOwner(), "wrong time format", false);
+                ErrorDialog wrongTimeFormatDialog = new ErrorDialog((JFrame) this.getOwner(), "wrong time format", false, 0);
             }
             this.dispose();
-
-
         }
     }
 

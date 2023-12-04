@@ -28,4 +28,39 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.akathist.maven.plugins.launch4j</groupId>
+                <artifactId>launch4j-maven-plugin</artifactId>
+                <version>1.7.25</version>
+                <executions>
+                    <execution>
+                        <id>l4j-clui</id>
+                        <phase>package</phase>
+                        <goals><goal>launch4j</goal></goals>
+                        <configuration>
+                            <!--运行方式，控制台-->
+                            <headerType>gui</headerType>
+
+                            <!--输出的exe文件-->
+                            <outfile>${project.build.directory}/DataBackuper.exe</outfile>
+
+                            <!--输出的jar-->
+                            <jar>${project.build.directory}/${artifactId}-${version}.jar</jar>
+
+                            <!--错误标题-->
+                            <errTitle>RunningError</errTitle>
+                            <classPath>
+                                <!--主类-->
+                                <mainClass>com.kanfs.main.Main</mainClass>
+                                <addDependencies>true</addDependencies>
+                                <preCp>anything</preCp>
+                            </classPath>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -1,7 +1,5 @@
 package com.kanfs.fileop;
 
-import com.kanfs.gui.WrongTimeFormatDialog;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,7 +20,7 @@ public class Filter {
     private int maxSize = Integer.MAX_VALUE;
     private boolean pathRE;
     private boolean nameRE;
-    private DateFormat fileDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    private DateFormat fileDF = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss['Z']");
     private DateFormat filterDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 
@@ -77,6 +75,7 @@ public class Filter {
             if ( !flag ) return false;
         }
         // 名字
+        System.out.println("name = " + name);
         if ( this.name != null && !this.name.equals("") )
         {
             if ( this.nameRE ) flag = Pattern.matches(this.name, fileName);
