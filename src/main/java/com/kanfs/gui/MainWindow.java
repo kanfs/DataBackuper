@@ -13,10 +13,7 @@ import javax.swing.filechooser.FileSystemView;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -288,30 +285,17 @@ public class MainWindow extends JFrame implements ActionListener{
                         new boolean[]{owner.isSelected(), time.isSelected(), acl.isSelected()}, filter, compressBtn.isSelected(),
                         decompressBtn.isSelected(), cipher, encryptBtn.isSelected(), decryptBtn.isSelected());
                 // 备份
-                if ( backupBtn.isSelected() ) backup(parser);
+                if ( backupBtn.isSelected() )
+                    backup(parser);
                     // 还原 将备份文件复制回源文件夹
                 else restore(parser);
-            } catch (IOException ex) {
+            } catch (FileNotFoundException ex) {
+                new ErrorDialog(this, "Error", false, 2);
                 throw new RuntimeException(ex);
-            } catch (ParseException ex) {
-                throw new RuntimeException(ex);
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            } catch (NoSuchPaddingException ex) {
-                throw new RuntimeException(ex);
-            } catch (NoSuchAlgorithmException ex) {
-                throw new RuntimeException(ex);
-            } catch (InvalidKeyException ex) {
-                throw new RuntimeException(ex);
-            } catch (InvalidKeySpecException ex) {
-                throw new RuntimeException(ex);
-            } catch (IllegalBlockSizeException ex) {
-                throw new RuntimeException(ex);
-            } catch (BadPaddingException ex) {
+            } catch (Exception ex) {
+                new ErrorDialog(this, "Error", false, 9);
                 throw new RuntimeException(ex);
             }
-
-
         }
     }
 }

@@ -20,7 +20,7 @@ public class ErrorDialog extends JDialog {
                 str = "路径为空。";
                 break;
             case 2:
-                str = "未找到对应文件。";
+                str = "未找到对应文件(夹)。";
                 break;
             case 3:
                 str = "错误的文件类型。";

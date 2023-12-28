@@ -307,14 +307,6 @@ public class Packer {
         return byteArrayOutputStream.toByteArray().length;
     }
 
-//    @Test
-//    public void test() throws ParseException, IOException, ClassNotFoundException {
-//        packFile(new File("C:\\Users\\kanfs\\Desktop\\SoftwareDevelopment\\modaoshi"), new File("C:\\Users\\kanfs\\Desktop\\SoftwareDevelopment\\modaoshi.kan"),
-//                new boolean[]{false, false, false}, null);
-//        unpackFile(new File("C:\\Users\\kanfs\\Desktop\\SoftwareDevelopment\\mofashi"), new File("C:\\Users\\kanfs\\Desktop\\SoftwareDevelopment\\modaoshi.kan"),
-//                new boolean[]{false, false, false}, null);
-//    }
-
 }
 
 class HuffmanNode{

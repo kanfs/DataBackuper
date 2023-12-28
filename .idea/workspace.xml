@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="DataBackuper:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ff9b2ae6-99e6-4789-899c-a2f7e8d6ca1b" name="变更" comment="complete the basic structure of backup function">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Filter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/FilterDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/WrongTimeFormatDialog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/alarm-warning-line.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/copyleft-line.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/copyright-line.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/filter-2-line.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/folder-warning-fill.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/ImageIcon/send-backward.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/.idea/artifacts/DataBackuper_jar.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/AESCoder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/MyFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Packer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/CipherDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/ErrorDialog.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/resources/ImageIcon/eye-line.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/resources/ImageIcon/eye-off-line.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/DataBackuper/src/main/resources/ImageIcon/key-2-line.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Basic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Basic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Parser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/FileNotFoundDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/FileNotFoundDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Basic.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Basic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Filter.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Filter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/fileop/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/FileNotFoundDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/FilterDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/FilterDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/MainWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/NotNullDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/gui/WrongTimeFormatDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/DataBackuper/src/main/java/com/kanfs/main/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataBackuper/src/main/resources/ImageIcon/folder-warning-fill.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Packer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/fileop/Packer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/ErrorDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/ErrorDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/MainWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/MainWindow.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/NotNullDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/gui/NotNullDialog.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/kanfs/main/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/kanfs/main/Main.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,7 +72,11 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/kanfs/Desktop/SoftwareDevelopment/DataBackuper/src/main/resources/ImageIcon&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/kanfs/Desktop/SoftwareDevelopment/DataBackuper&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDK&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.11816406&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2849224&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
 }</component>
@@ -66,7 +88,7 @@
       <recent name="C:\Users\kanfs\Desktop\SoftwareDevelopment\DataBackuper\src\main\resources\ImageIcon" />
     </key>
   </component>
-  <component name="RunManager" selected="应用程序.Main">
+  <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.kanfs.main.Main" />
       <module name="DataBackuper" />
@@ -80,26 +102,9 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Main.test" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="DataBackuper" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.kanfs.main.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.kanfs.main" />
-      <option name="MAIN_CLASS_NAME" value="com.kanfs.main.Main" />
-      <option name="METHOD_NAME" value="test" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="应用程序.Main" />
-        <item itemvalue="JUnit.Main.test" />
       </list>
     </recent_temporary>
   </component>
@@ -118,7 +123,15 @@
       <workItem from="1698065852525" duration="2621000" />
       <workItem from="1698129538929" duration="16894000" />
       <workItem from="1698212483312" duration="21903000" />
-      <workItem from="1698380584470" duration="18297000" />
+      <workItem from="1698380584470" duration="24560000" />
+      <workItem from="1698645387758" duration="25264000" />
+      <workItem from="1698733005546" duration="11656000" />
+      <workItem from="1698745103699" duration="14550000" />
+      <workItem from="1698816831809" duration="25236000" />
+      <workItem from="1698903677025" duration="21373000" />
+      <workItem from="1698929859166" duration="4523000" />
+      <workItem from="1698994511733" duration="537000" />
+      <workItem from="1703750256241" duration="2182000" />
     </task>
     <task id="LOCAL-00001" summary="complete the basic structment of backup function">
       <created>1698061407981</created>
