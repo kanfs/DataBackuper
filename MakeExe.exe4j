@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exe4j version="9.0" transformSequenceNumber="3">
+  <directoryPresets config="C:/Program Files (x86)/Java" />
+  <application name="DataBackuper" distributionSourceDir="C:/Users/kanfs/Desktop/SoftwareDevelopment" />
+  <executable name="DataBackuper" wrapperType="embed" executableMode="gui" />
+  <java mainClass="com.kanfs.main.Main" minVersion="18" maxVersion="19" allowBetaVM="true">
+    <searchSequence>
+      <directory location="../../../../Program Files (x86)/Java/jre-1.8.0_352" />
+      <registry />
+      <envVar name="JAVA_HOME" />
+      <envVar name="JDK_HOME" />
+    </searchSequence>
+    <classPath>
+      <archive location="C:/Users/kanfs/Desktop/SoftwareDevelopment/DataBackuper/DataBackuper/out/artifacts/DataBackuper_jar/DataBackuper.jar" failOnError="false" />
+    </classPath>
+  </java>
+</exe4j>
