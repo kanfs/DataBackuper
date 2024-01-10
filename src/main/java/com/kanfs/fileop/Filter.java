@@ -31,8 +31,8 @@ public class Filter {
         this.path = path;
         this.typeList = type.split("\\|");
         this.name = name;
-        if ( minSize != null && !minSize.equals("") ) this.minSize = Integer.parseInt(minSize) * (int)Math.pow(1024,minSizeUnit);
-        if ( maxSize != null && !maxSize.equals("") ) this.maxSize = Integer.parseInt(maxSize) * (int)Math.pow(1024,maxSizeUnit);
+        if ( minSize != null && !minSize.equals("") ) this.minSize = Integer.parseInt(minSize) * (int)Math.pow(1024,minSizeUnit+1);
+        if ( maxSize != null && !maxSize.equals("") ) this.maxSize = Integer.parseInt(maxSize) * (int)Math.pow(1024,maxSizeUnit+1);
         this.pathRE = pathRE;
         this.nameRE = nameRE;
     }
@@ -75,7 +75,6 @@ public class Filter {
             if ( !flag ) return false;
         }
         // 名字
-        System.out.println("name = " + name);
         if ( this.name != null && !this.name.equals("") )
         {
             if ( this.nameRE ) flag = Pattern.matches(this.name, fileName);

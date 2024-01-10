@@ -157,6 +157,7 @@ public class Packer {
         int index = 0;
         while (index <= binaryData.length() - 8)
         {
+
             buffer[index>>3] = (byte)Integer.parseUnsignedInt(binaryData.substring(index, index + 8), 2);
             index += 8;
             if ((index>>3) >= buffer.length ) //需要扩长
